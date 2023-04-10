@@ -40,7 +40,11 @@ fn init_config() -> Config {
 fn print_config(config: Config, workspace: Option<&String>) {
     if workspace.is_some() {
         let name = workspace.unwrap();
-        print_workspace(&name, &config.workspace[name]);
+        if let Some(workspace) = &config.workspace.get(name) {
+            print_workspace(&name, workspace);
+        } else {
+            println!("Non existing workspace");
+        }
         return;
     }
 
