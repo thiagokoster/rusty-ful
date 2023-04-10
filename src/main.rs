@@ -1,6 +1,7 @@
 use tokio;
 
 mod cli;
+mod config_parser;
 mod http;
 
 #[tokio::main]
