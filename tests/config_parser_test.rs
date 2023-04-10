@@ -31,4 +31,6 @@ fn test_parse_config_file() {
     };
     let parsed_config = parse_config(file_content).unwrap();
     assert_eq!(parsed_config, expected)
+
+    //TODO: Test invalid toml content
 }

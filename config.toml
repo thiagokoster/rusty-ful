@@ -1,0 +1,6 @@
+[workspace.one]
+description = "My first Workspace"
+[[workspace.one.requests]]
+name = "Get Request 1"
+method = "GET"
+url = "https://example.com/api/1"

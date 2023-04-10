@@ -1,7 +1,5 @@
 use serde::Deserialize;
-use std::collections::HashMap;
-use toml::de::Error;
-
+use std::{collections::HashMap, fs};
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Request {
     pub name: String,
@@ -20,7 +18,23 @@ pub struct Config {
     pub workspace: HashMap<String, Workspace>,
 }
 
-pub fn parse_config(config: &str) -> Result<Config, Error> {
-    let config: Config = toml::from_str(&config)?;
+#[derive(Debug)]
+pub enum ConfigParserError {
+    FileNotFound,
+    InvalidToml(String),
+}
+
+pub type ConfigResult<T> = Result<T, ConfigParserError>;
+
+pub fn read_config(path: &str) -> ConfigResult<Config> {
+    let file_contents = fs::read_to_string(path).map_err(|_| ConfigParserError::FileNotFound)?;
+    let config: Config = parse_config(&file_contents)?;
+
+    Ok(config)
+}
+
+pub fn parse_config(config: &str) -> Result<Config, ConfigParserError> {
+    let config: Config =
+        toml::from_str(&config).map_err(|e| ConfigParserError::InvalidToml(e.to_string()))?;
     Ok(config)
 }
