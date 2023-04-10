@@ -1,4 +1,4 @@
-use config_parser::Config;
+use config_parser::{Config, Workspace};
 use tokio;
 mod cli;
 mod config_parser;
@@ -12,9 +12,10 @@ async fn main() {
     let matches = cli::client().get_matches();
 
     if let Some(workspace_matches) = matches.subcommand_matches("workspace") {
+        let name = workspace_matches.get_one::<String>("name");
         if workspace_matches.get_flag("list") {
             println!("Listing all workspaces");
-            print_config(config);
+            print_config(config, name);
         } else {
             println!("No command specified for workspace");
         }
@@ -36,13 +37,28 @@ fn init_config() -> Config {
     }
 }
 
-fn print_config(config: Config) {
+fn print_config(config: Config, workspace: Option<&String>) {
+    if workspace.is_some() {
+        let name = workspace.unwrap();
+        print_workspace(&name, &config.workspace[name]);
+        return;
+    }
+
     for (key, value) in config.workspace.into_iter() {
-        println!("{} - {}", key, value.description.unwrap_or_default());
-        if value.requests.is_some() {
-            for (i, request) in value.requests.unwrap().iter().enumerate() {
-                println!("  {} - {}", i, request.name)
-            }
+        print_workspace(&key, &value)
+    }
+}
+
+fn print_workspace(name: &str, workspace: &Workspace) {
+    println!(
+        "{} - {}",
+        name,
+        workspace.description.as_ref().unwrap_or(&String::default())
+    );
+    if let Some(requests) = &workspace.requests {
+        for (i, request) in requests.iter().enumerate() {
+            println!("  {} - {}", i, request.name)
         }
+        println!()
     }
 }

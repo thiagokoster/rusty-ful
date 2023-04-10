@@ -1,15 +1,23 @@
 use clap::{Arg, Command};
 
 pub fn client() -> Command {
-    let workspace_cmd: Command = Command::new("workspace").about("Manage workspaces").arg(
-        Arg::new("list")
-            .long("list")
-            .long("list")
-            .short('l')
-            .required(false)
-            .num_args(0)
-            .help("List all workspaces"),
-    );
+    let workspace_cmd: Command = Command::new("workspace")
+        .about("Manage workspaces")
+        .arg(
+            Arg::new("name")
+                .help("The name of the workspace")
+                .index(1)
+                .required(false),
+        )
+        .arg(
+            Arg::new("list")
+                .long("list")
+                .long("list")
+                .short('l')
+                .required(false)
+                .num_args(0)
+                .help("List all workspaces"),
+        );
 
     Command::new("Rustyrust")
         .version("0.1.0")
