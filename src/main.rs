@@ -14,8 +14,7 @@ async fn main() {
     if let Some(workspace_matches) = matches.subcommand_matches("workspace") {
         let name = workspace_matches.get_one::<String>("name");
         if workspace_matches.get_flag("list") {
-            println!("Listing all workspaces");
-            print_config(config, name);
+            list_workspaces(&config);
         } else {
             println!("No command specified for workspace");
         }
@@ -25,7 +24,7 @@ async fn main() {
 }
 
 fn init_config() -> Config {
-    match config_parser::read_config("config.toml") {
+    match config_parser::read_config("workspaces.json") {
         Ok(config) => {
             // Config parsed successfully
             config
@@ -37,32 +36,22 @@ fn init_config() -> Config {
     }
 }
 
-fn print_config(config: Config, workspace: Option<&String>) {
-    if workspace.is_some() {
-        let name = workspace.unwrap();
-        if let Some(workspace) = &config.workspace.get(name) {
-            print_workspace(&name, workspace);
-        } else {
-            println!("Non existing workspace");
-        }
-        return;
-    }
+fn list_workspaces(config: &config_parser::Config) {
+    for (i, workspace) in config.workspaces.iter().enumerate() {
+        println!(
+            "{} - {}: {}",
+            i,
+            workspace.name,
+            workspace.description.as_ref().unwrap()
+        );
 
-    for (key, value) in config.workspace.into_iter() {
-        print_workspace(&key, &value)
-    }
-}
-
-fn print_workspace(name: &str, workspace: &Workspace) {
-    println!(
-        "{} - {}",
-        name,
-        workspace.description.as_ref().unwrap_or(&String::default())
-    );
-    if let Some(requests) = &workspace.requests {
-        for (i, request) in requests.iter().enumerate() {
-            println!("  {} - {}", i, request.name)
+        if let Some(requests) = &workspace.requests {
+            for (i, request) in requests.iter().enumerate() {
+                println!(
+                    "  {} - {}: {} {}",
+                    i, request.name, request.method, request.url
+                );
+            }
         }
-        println!()
     }
 }
