@@ -1,29 +1,20 @@
-use config_parser::{Config, Workspace};
+mod config_parser;
 use tokio;
 mod cli;
-mod config_parser;
-mod http;
+mod manager;
 
 #[tokio::main]
 async fn main() {
     println!("--- RUSTYFul ---");
-    let config = init_config();
+    let mut config = init_config();
 
-    let matches = cli::client().get_matches();
-
-    if let Some(workspace_matches) = matches.subcommand_matches("workspace") {
-        let name = workspace_matches.get_one::<String>("name");
-        if workspace_matches.get_flag("list") {
-            list_workspaces(&config);
-        } else {
-            println!("No command specified for workspace");
-        }
-    } else {
-        println!("No workspace specified");
-    }
+    let manager = manager::CLIManager {
+        config: &mut config,
+    };
+    cli::client(&manager);
 }
 
-fn init_config() -> Config {
+pub fn init_config() -> config_parser::Config {
     match config_parser::read_config("workspaces.json") {
         Ok(config) => {
             // Config parsed successfully
@@ -32,26 +23,6 @@ fn init_config() -> Config {
         Err(e) => {
             eprintln!("Error: {:?}", e);
             std::process::exit(1);
-        }
-    }
-}
-
-fn list_workspaces(config: &config_parser::Config) {
-    for (i, workspace) in config.workspaces.iter().enumerate() {
-        println!(
-            "{} - {}: {}",
-            i,
-            workspace.name,
-            workspace.description.as_ref().unwrap()
-        );
-
-        if let Some(requests) = &workspace.requests {
-            for (i, request) in requests.iter().enumerate() {
-                println!(
-                    "  {} - {}: {} {}",
-                    i, request.name, request.method, request.url
-                );
-            }
         }
     }
 }
