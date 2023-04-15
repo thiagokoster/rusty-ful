@@ -3,6 +3,7 @@ use std::fs;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Request {
+    pub id: u32,
     pub name: String,
     pub method: String,
     pub url: String,
@@ -10,6 +11,7 @@ pub struct Request {
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Workspace {
+    pub id: u32,
     pub name: String,
     pub description: Option<String>,
     pub requests: Option<Vec<Request>>,
@@ -48,10 +50,12 @@ fn test_parse_config_file() {
     {
         "workspaces": [
         {
+            "id": 1,
             "name": "one",
             "description": "first workspace",
             "requests": [
             {
+                "id": 1,
                 "name": "R1",
                 "method": "GET",
                 "url": "url1"
@@ -59,6 +63,7 @@ fn test_parse_config_file() {
             ]
         },
         {
+            "id": 2,
             "name": "two",
             "description": null
         }
@@ -68,15 +73,18 @@ fn test_parse_config_file() {
     let expected = Config {
         workspaces: vec![
             Workspace {
+                id: 1,
                 name: String::from("one"),
                 description: Some(String::from("first workspace")),
                 requests: Some(vec![Request {
+                    id: 1,
                     name: String::from("R1"),
                     method: String::from("GET"),
                     url: String::from("url1"),
                 }]),
             },
             Workspace {
+                id: 2,
                 name: String::from("two"),
                 description: None,
                 requests: None,
