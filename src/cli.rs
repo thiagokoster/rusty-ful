@@ -10,16 +10,23 @@ pub fn client(manager: &CLIManager) {
             .num_args(0),
     );
 
+    let request_cmd: Command = Command::new("make")
+        .about("Make a request")
+        .arg(Arg::new("request_id").required(true));
+
     let command = Command::new("Rustyrust")
         .version("0.1.0")
         .author("thiagokoster")
         .about("A Rust command-line HTTP client")
-        .subcommand(list_cmd);
+        .subcommand(list_cmd)
+        .subcommand(request_cmd);
+
     let matches = command.get_matches();
     match matches.subcommand() {
-        Some(("list", _args)) => {
-            manager.list_workspaces(_args.get_flag("all"));
+        Some(("list", args)) => {
+            manager.list_workspaces(args.get_flag("all"));
         }
+        Some(("make", args)) => manager.make_request(args.get_one::<String>("request_id").unwrap()),
         _ => short_help(),
     }
 }

@@ -1,10 +1,12 @@
 {
   "workspaces": [
     {
+      "id": 0,
       "name": "First workspace",
       "description": "My very first workspace!",
       "requests": [
         {
+          "id": 1,
           "name": "Get Users",
           "method": "GET",
           "url": "http://example.com/api/1"

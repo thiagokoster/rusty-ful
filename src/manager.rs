@@ -1,4 +1,4 @@
-use crate::config_parser::Config;
+use crate::config_parser::{Config, Request};
 
 pub struct CLIManager<'a> {
     pub config: &'a mut Config,
@@ -6,10 +6,10 @@ pub struct CLIManager<'a> {
 
 impl<'a> CLIManager<'a> {
     pub fn list_workspaces(&self, all: bool) {
-        for (i, workspace) in self.config.workspaces.iter().enumerate() {
+        for workspace in self.config.workspaces.iter() {
             println!(
                 "{} - {}: {}",
-                i,
+                workspace.id,
                 workspace.name,
                 workspace.description.as_ref().unwrap()
             );
@@ -17,11 +17,26 @@ impl<'a> CLIManager<'a> {
                 continue;
             }
             if let Some(requests) = &workspace.requests {
-                for (i, request) in requests.iter().enumerate() {
+                for request in requests.iter() {
                     println!(
                         "  {} - {}: {} {}",
-                        i, request.name, request.method, request.url
+                        request.id, request.name, request.method, request.url
                     );
+                }
+            }
+        }
+    }
+
+    pub fn make_request(&self, id: &str) {
+        println!("Making request with id: {} ...", id);
+
+        for workspace in self.config.workspaces.iter() {
+            if let Some(requests) = &workspace.requests {
+                if let Some(request) = requests
+                    .iter()
+                    .find(|&request| request.id.to_string() == id)
+                {
+                    println!("{} {}", request.method, request.url);
                 }
             }
         }
