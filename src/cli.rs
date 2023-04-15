@@ -1,41 +1,29 @@
+use crate::manager::CLIManager;
 use clap::{Arg, Command};
 
-pub fn client() -> Command {
-    let workspace_cmd: Command = Command::new("workspace")
-        .about("Manage workspaces")
-        .arg(
-            Arg::new("name")
-                .help("The name of the workspace")
-                .index(1)
-                .required(false),
-        )
-        .arg(
-            Arg::new("list")
-                .long("list")
-                .long("list")
-                .short('l')
-                .required(false)
-                .num_args(0)
-                .help("List all workspaces"),
-        );
+pub fn client(manager: &CLIManager) {
+    let list_cmd: Command = Command::new("list").about("List workspaces").arg(
+        Arg::new("all")
+            .long("all")
+            .short('a')
+            .required(false)
+            .num_args(0),
+    );
 
-    Command::new("Rustyrust")
+    let command = Command::new("Rustyrust")
         .version("0.1.0")
         .author("thiagokoster")
         .about("A Rust command-line HTTP client")
-        .subcommand(workspace_cmd)
+        .subcommand(list_cmd);
+    let matches = command.get_matches();
+    match matches.subcommand() {
+        Some(("list", _args)) => {
+            manager.list_workspaces(_args.get_flag("all"));
+        }
+        _ => short_help(),
+    }
 }
 
-//.arg(
-//            Arg::new("method")
-//                .short('m')
-//                .long("method")
-//                .help("The HTTP method to use for the request")
-//                .default_value("get"),
-//        )
-//        .arg(
-//            Arg::new("url")
-//                .help("The URL to make a request to")
-//                .required(true)
-//                .index(1),
-//        )
+fn short_help() {
+    println!("Use -h or --help for help: rustyful -h");
+}
