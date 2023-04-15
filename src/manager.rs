@@ -5,7 +5,7 @@ pub struct CLIManager<'a> {
 }
 
 impl<'a> CLIManager<'a> {
-    pub fn list_workspaces(&self) {
+    pub fn list_workspaces(&self, all: bool) {
         for (i, workspace) in self.config.workspaces.iter().enumerate() {
             println!(
                 "{} - {}: {}",
@@ -13,7 +13,9 @@ impl<'a> CLIManager<'a> {
                 workspace.name,
                 workspace.description.as_ref().unwrap()
             );
-
+            if !all {
+                continue;
+            }
             if let Some(requests) = &workspace.requests {
                 for (i, request) in requests.iter().enumerate() {
                     println!(

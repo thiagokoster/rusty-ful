@@ -17,7 +17,9 @@ pub fn client(manager: &CLIManager) {
         .subcommand(list_cmd);
     let matches = command.get_matches();
     match matches.subcommand() {
-        Some(("list", _args)) => manager.list_workspaces(),
+        Some(("list", _args)) => {
+            manager.list_workspaces(_args.get_flag("all"));
+        }
         _ => short_help(),
     }
 }
