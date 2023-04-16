@@ -1,6 +1,7 @@
 mod config_parser;
 use tokio;
 mod cli;
+mod http;
 mod manager;
 
 #[tokio::main]
@@ -11,7 +12,7 @@ async fn main() {
     let manager = manager::CLIManager {
         config: &mut config,
     };
-    cli::client(&manager);
+    cli::client(&manager).await;
 }
 
 pub fn init_config() -> config_parser::Config {

@@ -1,4 +1,5 @@
-use crate::config_parser::{Config, Request};
+use crate::config_parser::Config;
+use crate::http;
 
 pub struct CLIManager<'a> {
     pub config: &'a mut Config,
@@ -27,7 +28,7 @@ impl<'a> CLIManager<'a> {
         }
     }
 
-    pub fn make_request(&self, id: &str) {
+    pub async fn make_request(&self, id: &str) {
         println!("Making request with id: {} ...", id);
 
         for workspace in self.config.workspaces.iter() {
@@ -37,6 +38,7 @@ impl<'a> CLIManager<'a> {
                     .find(|&request| request.id.to_string() == id)
                 {
                     println!("{} {}", request.method, request.url);
+                    http::make_request(&request.method, &request.url).await;
                 }
             }
         }

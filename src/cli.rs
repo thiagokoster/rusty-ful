@@ -1,7 +1,7 @@
 use crate::manager::CLIManager;
 use clap::{Arg, Command};
 
-pub fn client(manager: &CLIManager) {
+pub async fn client(manager: &CLIManager<'_>) {
     let list_cmd: Command = Command::new("list").about("List workspaces").arg(
         Arg::new("all")
             .long("all")
@@ -26,7 +26,11 @@ pub fn client(manager: &CLIManager) {
         Some(("list", args)) => {
             manager.list_workspaces(args.get_flag("all"));
         }
-        Some(("make", args)) => manager.make_request(args.get_one::<String>("request_id").unwrap()),
+        Some(("make", args)) => {
+            manager
+                .make_request(args.get_one::<String>("request_id").unwrap())
+                .await
+        }
         _ => short_help(),
     }
 }
