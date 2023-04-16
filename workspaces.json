@@ -9,7 +9,7 @@
           "id": 1,
           "name": "Get Users",
           "method": "GET",
-          "url": "http://example.com/api/1"
+          "url": "https://jsonplaceholder.typicode.com/todos"
         }
       ]
     }
