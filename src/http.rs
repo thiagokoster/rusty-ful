@@ -1,13 +1,13 @@
-use reqwest::Error;
-use reqwest::{self, Response};
+use reqwest;
+use reqwest::{Error, Response};
 
-pub async fn make_request(method: &str, url: &str) -> Result<String, Error> {
+pub async fn make_request(method: &str, url: &str) -> Result<Response, Error> {
     let client = reqwest::Client::new();
 
     let request_builder = match method {
-        "get" => client.get(url),
-        "post" => client.post(url),
+        "GET" => client.get(url),
+        "POST" => client.post(url),
         _ => panic!("Unsuported method"),
     };
-    Ok(request_builder.send().await?.text().await?)
+    Ok(request_builder.send().await?)
 }
