@@ -10,6 +10,13 @@
           "name": "Get Users",
           "method": "GET",
           "url": "https://jsonplaceholder.typicode.com/todos/1 "
+        },
+        {
+          "id": 2,
+          "name": "Log in",
+          "method": "POST",
+          "url": "http://localhost:8080/login",
+          "body": {}
         }
       ]
     }
