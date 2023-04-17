@@ -38,7 +38,9 @@ impl<'a> CLIManager<'a> {
                     .find(|&request| request.id.to_string() == id)
                 {
                     println!("Making request with id: {} ...", id);
-                    if let Ok(result) = http::make_request(&request.method, &request.url).await {
+                    if let Ok(result) =
+                        http::make_request(&request.method.parse().unwrap(), &request.url).await
+                    {
                         self.print_response(result).await;
                     }
                 } else {
