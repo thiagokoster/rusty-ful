@@ -7,6 +7,7 @@ pub struct Request {
     pub name: String,
     pub method: String,
     pub url: String,
+    pub body: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
@@ -59,11 +60,21 @@ fn test_parse_config_file() {
                 "name": "R1",
                 "method": "GET",
                 "url": "url1"
+            },
+            {
+                "id": 2,
+                "name": "R2",
+                "method": "POST",
+                "url": "url2",
+                "body": {
+                    "user": "thiagokoster",
+                    "pass": "donthackplz"
+                }
             }
             ]
         },
         {
-            "id": 2,
+            "id": 3,
             "name": "two",
             "description": null
         }
@@ -76,15 +87,27 @@ fn test_parse_config_file() {
                 id: 1,
                 name: String::from("one"),
                 description: Some(String::from("first workspace")),
-                requests: Some(vec![Request {
-                    id: 1,
-                    name: String::from("R1"),
-                    method: String::from("GET"),
-                    url: String::from("url1"),
-                }]),
+                requests: Some(vec![
+                    Request {
+                        id: 1,
+                        name: String::from("R1"),
+                        method: String::from("GET"),
+                        url: String::from("url1"),
+                        body: None,
+                    },
+                    Request {
+                        id: 2,
+                        name: String::from("R2"),
+                        method: String::from("POST"),
+                        url: String::from("url2"),
+                        body: Some(
+                            serde_json::json!({"user": "thiagokoster", "pass": "donthackplz"}),
+                        ),
+                    },
+                ]),
             },
             Workspace {
-                id: 2,
+                id: 3,
                 name: String::from("two"),
                 description: None,
                 requests: None,
