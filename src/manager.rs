@@ -39,7 +39,7 @@ impl<'a> CLIManager<'a> {
                 {
                     println!("Making request with id: {} ...", id);
                     if let Ok(result) =
-                        http::make_request(&request.method.parse().unwrap(), &request.url).await
+                        http::make_request(&request.method.parse().unwrap(), &request).await
                     {
                         self.print_response(result).await;
                     }
@@ -51,6 +51,7 @@ impl<'a> CLIManager<'a> {
     }
 
     async fn print_response(&self, response: Response) {
+        println!("--- Response ---");
         println!("{} - {}", response.url(), response.status());
         println!("{}", response.text().await.unwrap());
     }
