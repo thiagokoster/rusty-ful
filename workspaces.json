@@ -16,7 +16,7 @@
           "name": "Log in",
           "method": "POST",
           "url": "http://localhost:8080/login",
-          "body": {}
+          "body": { "username": "thiago", "password": "1234" }
         }
       ]
     }

@@ -1,3 +1,4 @@
+use crate::config_parser::Request;
 use reqwest;
 use reqwest::{Error, Response};
 
@@ -17,12 +18,19 @@ impl std::str::FromStr for Method {
     }
 }
 
-pub async fn make_request(method: &Method, url: &str) -> Result<Response, Error> {
+pub async fn make_request(method: &Method, request: &Request) -> Result<Response, Error> {
     let client = reqwest::Client::new();
-
     let request_builder = match method {
-        Method::GET => client.get(url),
-        Method::POST => client.post(url),
+        Method::GET => client.get(&request.url),
+        Method::POST => {
+            let mut req = client.post(&request.url);
+            if let Some(request_body) = &request.body {
+                let request_body = serde_json::to_string(&request_body).unwrap();
+                println!("Request Body: {}", request_body);
+                req = req.body(request_body);
+            }
+            req
+        }
     };
     Ok(request_builder.send().await?)
 }
