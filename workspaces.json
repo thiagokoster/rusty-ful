@@ -2,21 +2,22 @@
   "workspaces": [
     {
       "id": 0,
-      "name": "First workspace",
-      "description": "My very first workspace!",
+      "name": "Blog workspace",
+      "description": "Workspace for my blog api project!",
       "requests": [
         {
           "id": 1,
-          "name": "Get Users",
-          "method": "GET",
-          "url": "https://jsonplaceholder.typicode.com/todos/1 "
+          "name": "Successful Login",
+          "method": "POST",
+          "url": "http://localhost:8080/login",
+          "body": { "username": "admin", "password": "admin" }
         },
         {
           "id": 2,
-          "name": "Log in",
+          "name": "Unauthorized Login",
           "method": "POST",
           "url": "http://localhost:8080/login",
-          "body": { "username": "thiago", "password": "1234" }
+          "body": { "username": "admin", "password": "admin2" }
         }
       ]
     }
